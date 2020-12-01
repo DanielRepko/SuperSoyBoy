@@ -104,8 +104,8 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
+  m_CollisionDetection: 1
+  m_Constraints: 4
 --- !u!68 &2219004820464992441
 EdgeCollider2D:
   m_ObjectHideFlags: 0
