@@ -22,6 +22,9 @@ public class SoyBoyController : MonoBehaviour
 
     public float jumpDurationThreshold = 0.25f;
     private float jumpDuration;
+    public float jump = 14f;
+
+    public float airAccel = 3f;
 
 
     private void Awake()
@@ -65,6 +68,53 @@ public class SoyBoyController : MonoBehaviour
             return false;
         }
     }
+
+    public bool IsAgainstWall()
+    {
+        bool wallOnLeft = Physics2D.Raycast(new Vector2(transform.position.x - width, transform.position.y), -Vector2.right, rayCastLengthCheck);
+        bool wallOnRight = Physics2D.Raycast(new Vector2(transform.position.x + width, transform.position.y), Vector2.right, rayCastLengthCheck);
+
+        if(wallOnLeft || wallOnRight)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool PlayerIsTouchingGroundOrWall()
+    {
+        if (PlayerIsOnGround() || IsAgainstWall())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public int GetWallDirection()
+    {
+        bool wallOnLeft = Physics2D.Raycast(new Vector2(transform.position.x - width, transform.position.y), -Vector2.right, rayCastLengthCheck);
+        bool wallOnRight = Physics2D.Raycast(new Vector2(transform.position.x + width, transform.position.y), Vector2.right, rayCastLengthCheck);
+
+        if (wallOnLeft)
+        {
+            return -1;
+        }
+        else if (wallOnRight)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -110,7 +160,7 @@ public class SoyBoyController : MonoBehaviour
         var acceleration = accel;
         var xVelocity = 0f;
 
-        if(input.x == 0)
+        if(PlayerIsOnGround() && input.x == 0)
         {
             xVelocity = 0f;
         }
@@ -118,9 +168,23 @@ public class SoyBoyController : MonoBehaviour
         {
             xVelocity = rigidbody.velocity.x;
         }
+        var yVelocity = 0f;
+        if(PlayerIsTouchingGroundOrWall() && input.y == 1)
+        {
+            yVelocity = jump;
+        }
+        else
+        {
+            yVelocity = rigidbody.velocity.y;
+        }
 
         rigidbody.AddForce(new Vector2(((input.x * speed) - rigidbody.velocity.x) * acceleration, 0));
-        rigidbody.velocity = new Vector2(xVelocity, rigidbody.velocity.y);
+        rigidbody.velocity = new Vector2(xVelocity, yVelocity);
+
+        if(IsAgainstWall() && !PlayerIsOnGround() && input.y == 1)
+        {
+            rigidbody.velocity = new Vector2(-GetWallDirection() * speed * 0.75f, rigidbody.velocity.y);
+        }
 
 
         if(isJumping && jumpDuration < jumpDurationThreshold)
