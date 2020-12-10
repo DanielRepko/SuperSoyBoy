@@ -122,6 +122,8 @@ public class SoyBoyController : MonoBehaviour
         input.x = Input.GetAxis("Horizontal");
         input.y = Input.GetAxis("Jump");
 
+        animator.SetFloat("Speed", Mathf.Abs(input.x));
+
         //flips the sprite to change which direction the player is facing
         if (input.x > 0f)
         {
@@ -135,10 +137,12 @@ public class SoyBoyController : MonoBehaviour
         if (input.y >= 1f)
         {
             jumpDuration += Time.deltaTime;
+            animator.SetBool("IsJumping", true);
         }
         else
         {
             isJumping = false;
+            animator.SetBool("IsJumping", false);
             jumpDuration = 0f;
         }
 
@@ -149,6 +153,8 @@ public class SoyBoyController : MonoBehaviour
             {
                 isJumping = true;
             }
+
+            animator.SetBool("IsOnWall", false);
         }
 
 
@@ -184,8 +190,19 @@ public class SoyBoyController : MonoBehaviour
         if(IsAgainstWall() && !PlayerIsOnGround() && input.y == 1)
         {
             rigidbody.velocity = new Vector2(-GetWallDirection() * speed * 0.75f, rigidbody.velocity.y);
+            animator.SetBool("IsOnWall", false);
+            animator.SetBool("IsJumping", true);
+        }
+        else if (!IsAgainstWall())
+        {
+            animator.SetBool("IsOnWall", false);
+            animator.SetBool("IsJumping", true);
         }
 
+        if(IsAgainstWall() && !PlayerIsOnGround())
+        {
+            animator.SetBool("IsOnWall", true);
+        }
 
         if(isJumping && jumpDuration < jumpDurationThreshold)
         {
