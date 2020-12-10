@@ -26,6 +26,12 @@ public class SoyBoyController : MonoBehaviour
 
     public float airAccel = 3f;
 
+    public AudioClip runClip;
+    public AudioClip jumpClip;
+    public AudioClip slideClip;
+    private AudioSource audioSource;
+
+
 
     private void Awake()
     {
@@ -35,6 +41,8 @@ public class SoyBoyController : MonoBehaviour
 
         width = GetComponent<Collider2D>().bounds.extents.x + 0.1f;
         height = GetComponent<Collider2D>().bounds.extents.y + 0.2f;
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Start is called before the first frame update
@@ -147,14 +155,18 @@ public class SoyBoyController : MonoBehaviour
         }
 
         //allows the player to jump only if they are on the ground and not already jumping
-        if (PlayerIsOnGround() && isJumping == false)
+        if (PlayerIsOnGround() && !isJumping)
         {
-            if(input.y > 0f)
+            if (input.y > 0f)
             {
                 isJumping = true;
+                PlayAudioClip(jumpClip);
             }
-
             animator.SetBool("IsOnWall", false);
+            if (input.x < 0f || input.x > 0f)
+            {
+                PlayAudioClip(runClip);
+            }
         }
 
 
@@ -187,26 +199,36 @@ public class SoyBoyController : MonoBehaviour
         rigidbody.AddForce(new Vector2(((input.x * speed) - rigidbody.velocity.x) * acceleration, 0));
         rigidbody.velocity = new Vector2(xVelocity, yVelocity);
 
-        if(IsAgainstWall() && !PlayerIsOnGround() && input.y == 1)
+        if (IsAgainstWall() && !PlayerIsOnGround() && input.y == 1)
         {
+
             rigidbody.velocity = new Vector2(-GetWallDirection() * speed * 0.75f, rigidbody.velocity.y);
             animator.SetBool("IsOnWall", false);
             animator.SetBool("IsJumping", true);
+            PlayAudioClip(jumpClip);
         }
         else if (!IsAgainstWall())
         {
             animator.SetBool("IsOnWall", false);
             animator.SetBool("IsJumping", true);
         }
-
-        if(IsAgainstWall() && !PlayerIsOnGround())
+        if (IsAgainstWall() && !PlayerIsOnGround())
         {
             animator.SetBool("IsOnWall", true);
+            PlayAudioClip(slideClip);
         }
 
-        if(isJumping && jumpDuration < jumpDurationThreshold)
+        if (isJumping && jumpDuration < jumpDurationThreshold)
         {
             rigidbody.velocity = new Vector2(rigidbody.velocity.x, jumpSpeed);
+        }
+    }
+
+    void PlayAudioClip(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            if (!audioSource.isPlaying) audioSource.PlayOneShot(clip);
         }
     }
 }
