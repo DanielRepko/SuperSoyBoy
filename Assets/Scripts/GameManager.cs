@@ -40,6 +40,6 @@ public class GameManager : MonoBehaviour
     private IEnumerator RestartLevelDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
