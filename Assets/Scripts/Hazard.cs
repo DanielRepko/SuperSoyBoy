@@ -40,5 +40,7 @@ public class Hazard : MonoBehaviour
             spriteRenderer.sprite = hitSprite;
             Destroy(collision.gameObject);
         }
+
+        GameManager.instance.RestartLevel(1.25f);
     }
 }
