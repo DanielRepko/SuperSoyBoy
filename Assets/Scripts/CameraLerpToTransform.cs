@@ -10,6 +10,7 @@ public class CameraLerpToTransform : MonoBehaviour {
 	public float minY;
 	public float maxX;
 	public float maxY;
+	public float cameraZDepth;
 	
 	// Update is called once per frame
 	void FixedUpdate () 
@@ -22,6 +23,7 @@ public class CameraLerpToTransform : MonoBehaviour {
 			var clampX = Mathf.Clamp(v3.x, minX, maxX);
 			var clampY = Mathf.Clamp(v3.y, minY, maxY);
 			transform.position = new Vector3(clampX, clampY, -10f);
+			cameraZDepth = transform.position.z;
         }
 	}
 }
