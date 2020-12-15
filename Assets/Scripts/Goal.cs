@@ -28,6 +28,11 @@ public class Goal : MonoBehaviour
             {
                 audioSource.PlayOneShot(goalClip);
             }
+
+            var timer = FindObjectOfType<Timer>();
+
+            GameManager.instance.SaveTime(timer.time);
+
             GameManager.instance.RestartLevel(0.5f);
         }
     }
