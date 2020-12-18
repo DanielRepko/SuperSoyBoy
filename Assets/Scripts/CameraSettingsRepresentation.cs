@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class CameraSettingsRepresentation : MonoBehaviour
+public class CameraSettingsRepresentation
 {
     public string cameraTrackTarget;
     public float trackingSpeed;

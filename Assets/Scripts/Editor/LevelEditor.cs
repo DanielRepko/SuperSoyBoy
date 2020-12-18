@@ -48,12 +48,12 @@ public class LevelEditor : Editor
             }
 
             ldr.levelItems = levelItems.ToArray();
-            ldr.playerStartPosition =
-             GameObject.Find("SoyBoy").transform.position;
+            ldr.playerStartPosition = GameObject.Find("SoyBoy").transform.position;
             
             var currentCamSettings = FindObjectOfType<CameraLerpToTransform>();
             if (currentCamSettings != null)
             {
+                
                 ldr.cameraSettings = new CameraSettingsRepresentation()
                 {
                     cameraTrackTarget = currentCamSettings.camTarget.name,
